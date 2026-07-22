@@ -30,7 +30,7 @@
             box-sizing: border-box;
         }
         h1 { margin: 0 0 24px; font-size: 30px; }
-        #cache-message { min-height: 28px; color: #a9d9ff; font-size: 18px; }
+        #cache-message { min-height: 28px; color: #a9d9ff; font-size: 18px; white-space: pre-line; }
         .progress-track {
             height: 18px;
             margin-top: 20px;
@@ -104,7 +104,7 @@
             }
 
             pendingPercent = 100;
-            pendingMessage = 'Cache installed successfully.';
+            pendingMessage = '✅ تم تثبيت الكاش بنجاح\nيمكنك الآن استخدام الصفحة بدون إنترنت.';
             renderCacheState();
 
             readManifestRevision(function (revision) {
@@ -125,6 +125,7 @@
         }
 
         function cacheError(event) {
+            if (cacheFinished) return;
             var status = cacheStatusName(window.applicationCache.status);
             var reason = event && event.reason ? event.reason : 'Unknown reason';
             var url = event && event.url ? event.url : 'Unavailable URL';

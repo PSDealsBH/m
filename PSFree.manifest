@@ -1,8 +1,9 @@
 CACHE MANIFEST
 # PS_DEALS_BH Offline Cache
-# revision: c261737f9e1309b2
+# revision: 118e69737b1a345c
 
 CACHE:
+./
 cache.html
 exploit.html
 index.html

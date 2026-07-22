@@ -200,6 +200,7 @@ async function psfreeLapse() {
     log("Loading Feyzee61's PSFree Lapse implementation..");
     try {
       await loadScript('./includes/js/exploits/bundle.js');
+      window.log = log;
 
       if (typeof doJailBreak === "function") {
         doJailBreak();

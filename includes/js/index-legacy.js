@@ -241,6 +241,7 @@ function _psfreeLapse() {
           _context2.n = 7;
           return loadScript('./includes/js/exploits/bundle.js');
         case 7:
+          window.log = log;
           if (typeof doJailBreak === "function") {
             doJailBreak();
           } else {

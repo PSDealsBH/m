@@ -3,6 +3,7 @@ import hashlib
 import os
 
 OUTPUT_FILE = "PSFree.manifest"
+CACHE_URLS = ["./"]
 
 # Minimal PS4 9.00 / GoldHEN offline runtime. Keep this explicit so hidden
 # payloads, other firmware files, and development files never enter AppCache.
@@ -61,6 +62,7 @@ def create_manifest():
         f"# revision: {revision}",
         "",
         "CACHE:",
+        *CACHE_URLS,
         *REQUIRED_FILES,
         "",
         "NETWORK:",
