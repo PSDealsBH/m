@@ -24,6 +24,7 @@ var user = {
 };
 var autoJbInterval;
 var goldHENStatusFinal = false;
+var consoleScrollInterval;
 var lastScrollY = 0;
 var lastSection = "initial";
 var devMode = false; // Dev mode for PC debugging
@@ -156,8 +157,11 @@ function _jailbreak() {
           }
           return _context.a(2);
         case 1:
+          startConsoleAutoScroll();
+
           // clear terminal
           ui.consoleElement.textContent = '';
+          forceConsoleToBottom();
           goldHENStatusFinal = false;
           // stop counter
           if (autoJbInterval) clearInterval(autoJbInterval);
@@ -743,12 +747,27 @@ function ipGuess() {
     }
   }
 }
-function scrollConsoleToBottom() {
-  var consoleContainer = document.getElementById('DebugConsole');
-  if (!consoleContainer) return;
+function forceConsoleToBottom() {
+  var box = document.getElementById("DebugConsole");
+  if (!box) return;
   setTimeout(function () {
-    consoleContainer.scrollTop = consoleContainer.scrollHeight;
+    box.scrollTop = box.scrollHeight;
   }, 0);
+  setTimeout(function () {
+    box.scrollTop = box.scrollHeight;
+  }, 50);
+}
+function startConsoleAutoScroll() {
+  if (consoleScrollInterval) clearInterval(consoleScrollInterval);
+  consoleScrollInterval = setInterval(function () {
+    forceConsoleToBottom();
+  }, 100);
+}
+function stopConsoleAutoScroll() {
+  if (!consoleScrollInterval) return;
+  clearInterval(consoleScrollInterval);
+  consoleScrollInterval = null;
+  forceConsoleToBottom();
 }
 function appendConsoleLine(message, color) {
   var span = document.createElement('span');
@@ -757,7 +776,18 @@ function appendConsoleLine(message, color) {
     span.style.color = color;
   }
   ui.consoleElement.appendChild(span);
-  scrollConsoleToBottom();
+  forceConsoleToBottom();
+}
+var consoleOutput = document.getElementById("console");
+if (consoleOutput && window.MutationObserver) {
+  var consoleObserver = new MutationObserver(function () {
+    forceConsoleToBottom();
+  });
+  consoleObserver.observe(consoleOutput, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
 }
 function isGoldHENPayload() {
   var payloadPath = sessionStorage.getItem('payload_path') || '';
@@ -768,15 +798,18 @@ function showGoldHENSuccess() {
   goldHENStatusFinal = true;
   appendConsoleLine('\n✅ تم تفعيل GoldHEN بنجاح', '#7CFF9B');
   appendConsoleLine('يمكنك الآن الضغط على زر PS واستخدام الجهاز بشكل طبيعي.', '#B9FFCA');
+  stopConsoleAutoScroll();
 }
 function showGoldHENFailure() {
   if (goldHENStatusFinal || !isGoldHENPayload()) return;
   goldHENStatusFinal = true;
   appendConsoleLine('\n❌ فشل التفعيل، سيتم إعادة المحاولة تلقائيًا.', '#FF8F8F');
+  stopConsoleAutoScroll();
 }
 function log(message, color) {
   if (user.clearLog) {
     ui.consoleElement.textContent = '';
+    forceConsoleToBottom();
     user.clearLog = false;
   }
   appendConsoleLine(message, color);
