@@ -602,6 +602,7 @@
                 window.applicationCache.addEventListener("progress", DLProgress, false);
                 window.applicationCache.oncached = function (e) { DisplayCacheProgress(); };
                 window.applicationCache.onupdateready = function (e) { DisplayCacheProgress(); };
+                window.applicationCache.onerror = function (e) { DisplayCacheError(); };
             } else {
                 console.warn("This browser does not support save in cache!");
             }

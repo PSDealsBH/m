@@ -589,17 +589,20 @@ function renderPayloads(payloads) {
 
 // Handling cache
 function DLProgress(e) {
-  var Percent = Math.round(e.loaded / e.total * 100);
+  var Percent = e.total ? Math.round(e.loaded / e.total * 100) : 0;
+  if (Percent > 100) Percent = 100;
   document.title = (window.lang && window.lang.cache || "Caching ") + " " + Percent + "%";
 }
 function DisplayCacheProgress() {
+  document.title = "Installing Cache: 100%";
+  appendConsoleLine("Cache installed successfully.", "#7CFF9B");
   setTimeout(function () {
-    document.title = "\u2713";
-  }, 1000);
-  setTimeout(function () {
-    // location.reload();
-    document.title = window.lang && window.lang.title || "PSFree Enhanced";
-  }, 2000);
+    document.title = "Cache installed successfully.";
+  }, 800);
+}
+function DisplayCacheError() {
+  document.title = "Cache installation failed.";
+  appendConsoleLine("Cache installation failed. Please check the connection and reload the page.", "#FF8F8F");
 }
 function terminateCache() {
   if (window.applicationCache) {
