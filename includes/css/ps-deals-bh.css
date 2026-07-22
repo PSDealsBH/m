@@ -1,0 +1,221 @@
+/* PS_DEALS_BH presentation layer. Legacy controls remain in the DOM for script compatibility. */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: #07111f !important;
+    background-image: linear-gradient(rgba(0, 7, 18, 0.18), rgba(0, 7, 18, 0.3)), url("../images/ps-deals-bg.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+.mainContainer {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Keep script-dependent legacy UI available but completely out of sight. */
+#initial-screen,
+#payloadsSection,
+#settings-popup-overlay,
+#about-popup-overlay,
+#choose-fanThreshold-overlay,
+#successRate,
+#henSelection label {
+    display: none !important;
+}
+
+#exploit-main-screen,
+#exploitContainer,
+#exploit-status-panel {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#exploit-main-screen {
+    width: 100% !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    direction: ltr;
+    background: transparent !important;
+}
+
+#exploitContainer {
+    width: 100% !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    direction: ltr;
+}
+
+#exploit-status-panel {
+    display: block !important;
+    width: 90% !important;
+    width: min(90%, 760px) !important;
+    max-width: 760px;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 42px 46px 28px !important;
+    border: 1px solid #2599ef;
+    border-radius: 30px;
+    background: rgba(2, 18, 35, 0.9) !important;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.58), inset 0 0 35px rgba(22, 126, 214, 0.08);
+}
+
+.ps-deals-brand {
+    display: block !important;
+    margin: 0 0 28px;
+    text-align: center;
+}
+
+.ps-deals-logo {
+    margin: 0 !important;
+    color: #ffd46a;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 2px;
+    background: -webkit-linear-gradient(top, #fff5b8 5%, #ffd264 48%, #c88718 100%);
+    background: linear-gradient(180deg, #fff5b8 5%, #ffd264 48%, #c88718 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(255, 196, 61, 0.42), 0 2px 0 rgba(91, 48, 0, 0.8);
+}
+
+.ps-deals-subtitle {
+    margin: 10px 0 0;
+    color: #72c8ff;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+}
+
+#DebugConsole {
+    width: 75% !important;
+    height: 220px !important;
+    min-height: 220px !important;
+    margin: 0 auto 26px !important;
+    padding: 22px !important;
+    overflow-y: auto;
+    box-sizing: border-box;
+    border: 1px solid #36536e;
+    border-radius: 20px;
+    background: rgba(0, 6, 13, 0.93) !important;
+    color: #d9e7f7;
+    font-size: 15px !important;
+    line-height: 1.65;
+}
+
+#console {
+    margin: 0;
+    white-space: pre-wrap;
+    color: #c7e9ff;
+    text-align: center;
+    direction: rtl;
+}
+
+#henSelection {
+    display: block !important;
+    text-align: center;
+}
+
+#exploitRun {
+    display: inline-block !important;
+    width: 70% !important;
+    max-width: 560px;
+    height: 60px;
+    padding: 0 32px !important;
+    border: 2px solid #eab63e;
+    border-radius: 20px !important;
+    background: -webkit-linear-gradient(top, #096fe0, #063c8a 62%, #041c3d) !important;
+    background: linear-gradient(180deg, #096fe0, #063c8a 62%, #041c3d) !important;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 23px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 10px 28px rgba(18, 137, 226, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    direction: rtl;
+}
+
+.launch-icon {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+#exploitRun:hover,
+#exploitRun:focus {
+    transform: scale(1.025);
+    box-shadow: 0 14px 34px rgba(18, 151, 244, 0.42);
+    filter: brightness(1.08);
+}
+
+.ps-deals-footer {
+    margin: 28px 0 0;
+    color: #f4bd45;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    direction: rtl;
+}
+
+.ps-deals-footer strong {
+    font-size: 19px;
+    letter-spacing: 0.8px;
+}
+
+@media (max-width: 727px) {
+    #exploit-status-panel {
+        display: block !important;
+        width: calc(100% - 24px) !important;
+        max-width: 760px;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 12px auto !important;
+        padding: 26px 22px 22px !important;
+    }
+
+    .ps-deals-logo {
+        font-size: 46px;
+    }
+
+    .ps-deals-subtitle {
+        font-size: 18px;
+    }
+
+    #DebugConsole {
+        width: 90% !important;
+        height: 220px !important;
+        min-height: 220px !important;
+    }
+
+    #exploitRun {
+        width: 90% !important;
+        font-size: 20px;
+    }
+
+    .ps-deals-footer {
+        margin-top: 22px;
+        font-size: 14px;
+    }
+}
