@@ -601,9 +601,11 @@ function ipGuess() {
 
 function scrollConsoleToBottom() {
   var consoleContainer = document.getElementById('DebugConsole');
-  if (consoleContainer) {
+  if (!consoleContainer) return;
+
+  setTimeout(function () {
     consoleContainer.scrollTop = consoleContainer.scrollHeight;
-  }
+  }, 0);
 }
 
 function appendConsoleLine(message, color) {
