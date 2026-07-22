@@ -52,6 +52,36 @@ body {
     background: transparent !important;
 }
 
+.instagram-qr {
+    position: absolute;
+    top: 7vh;
+    right: 4vw;
+    z-index: 3;
+    width: 130px;
+    margin: 0;
+    color: #f7c75e;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    direction: rtl;
+}
+
+.instagram-qr img {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 2px solid rgba(234, 182, 62, 0.9);
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.48);
+}
+
+.instagram-qr p {
+    margin: 7px 0 0;
+}
+
 #exploitContainer {
     width: 100% !important;
     min-height: 100vh !important;
@@ -185,6 +215,23 @@ body {
 }
 
 @media (max-width: 727px) {
+    .instagram-qr {
+        top: 10px;
+        right: 10px;
+        width: 78px;
+        font-size: 10px;
+    }
+
+    .instagram-qr img {
+        padding: 3px;
+        border-width: 1px;
+        border-radius: 7px;
+    }
+
+    .instagram-qr p {
+        margin-top: 4px;
+    }
+
     #exploit-status-panel {
         display: block !important;
         width: calc(100% - 24px) !important;

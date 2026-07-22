@@ -13,6 +13,7 @@ var user = {
   blockJailbreak: false,  // Prevent double jailbreak execution
 }
 var autoJbInterval;
+var goldHENStatusFinal = false;
 let lastScrollY = 0;
 let lastSection = "initial";
 var devMode = false;   // Dev mode for PC debugging
@@ -144,6 +145,7 @@ async function jailbreak() {
 
   // clear terminal
   ui.consoleElement.textContent = '';
+  goldHENStatusFinal = false;
   // stop counter
   if (autoJbInterval) clearInterval(autoJbInterval);
 
@@ -235,19 +237,32 @@ async function badHoistJailbreak() {
   if (result === 0 || result === 91) {
     log("\nKernel exploit succeeded", "green");
     // Inject HEN payload
-    getPayload672(sessionStorage.getItem('payload_path'));
+    loadPayload672WithStatus(sessionStorage.getItem('payload_path'));
 
     log("\nBad Hoist by Fire30, 6.7x Kernel Exploit by Sleirsgoevy");
     log("Implementation taken from Feyzee61");
-    jailbreakSuccess();
   } else if (result === 179) {
-    getPayload672(sessionStorage.getItem('payload_path'));
+    loadPayload672WithStatus(sessionStorage.getItem('payload_path'));
 
     log("\nAlready jailbroken, skipping..", "green");
-    jailbreakSuccess();
   } else {
     log("\nAn error occured during Kernel Exploit\nPlease restart console and try again...", "red");
   }
+}
+
+function loadPayload672WithStatus(payloadPath) {
+  var originalLoadPayload672 = LoadPayload672;
+  LoadPayload672 = function () {
+    try {
+      originalLoadPayload672();
+      showGoldHENSuccess();
+      jailbreakSuccess();
+    } catch (error) {
+      showGoldHENFailure();
+      throw error;
+    }
+  };
+  getPayload672(payloadPath);
 }
 
 function jailbreakSuccess() {
@@ -579,17 +594,52 @@ function ipGuess() {
   }
 }
 
-function log(message, color) {
-  if (user.clearLog) {
-    ui.consoleElement.textContent = '';
-    user.clearLog = false;
+function scrollConsoleToBottom() {
+  var consoleContainer = document.getElementById('DebugConsole');
+  if (consoleContainer) {
+    consoleContainer.scrollTop = consoleContainer.scrollHeight;
   }
+}
+
+function appendConsoleLine(message, color) {
   const span = document.createElement('span');
   span.textContent = message + '\n';
   if (color) {
     span.style.color = color;
   }
   ui.consoleElement.appendChild(span);
+  scrollConsoleToBottom();
+}
+
+function isGoldHENPayload() {
+  var payloadPath = sessionStorage.getItem('payload_path') || '';
+  return payloadPath.indexOf('/GoldHEN/') !== -1;
+}
+
+function showGoldHENSuccess() {
+  if (goldHENStatusFinal || !isGoldHENPayload()) return;
+  goldHENStatusFinal = true;
+  appendConsoleLine('\n✅ تم تفعيل GoldHEN بنجاح', '#7CFF9B');
+  appendConsoleLine('يمكنك الآن الضغط على زر PS واستخدام الجهاز بشكل طبيعي.', '#B9FFCA');
+}
+
+function showGoldHENFailure() {
+  if (goldHENStatusFinal || !isGoldHENPayload()) return;
+  goldHENStatusFinal = true;
+  appendConsoleLine('\n❌ فشل التفعيل، سيتم إعادة المحاولة تلقائيًا.', '#FF8F8F');
+}
+
+function log(message, color) {
+  if (user.clearLog) {
+    ui.consoleElement.textContent = '';
+    user.clearLog = false;
+  }
+  appendConsoleLine(message, color);
+  if (message.indexOf('Homebrew Enabler loaded') !== -1) {
+    showGoldHENSuccess();
+  } else if (color === 'red') {
+    showGoldHENFailure();
+  }
 }
 
 // To be only used when this project is served on a PS4-Websrv payload on a PS4.
