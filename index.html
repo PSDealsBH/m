@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="PSFree.manifest">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -21,6 +21,41 @@
         if (savedColor){
             document.getElementById('color-stylesheet').setAttribute('href', './includes/css/colors/' + savedColor + '.css');
         }
+    </script>
+    <script>
+        // AppCache is installed on a dedicated lightweight page.
+        (function () {
+            if (!window.applicationCache) return;
+
+            var installed = localStorage.getItem('psDealsCacheInstalled') === 'true';
+            if (!installed || window.applicationCache.status === window.applicationCache.UNCACHED) {
+                window.location.replace('./cache.html');
+                return;
+            }
+
+            // Check the deterministic manifest revision when online. If the request
+            // fails, keep using the already installed offline cache.
+            try {
+                var request = new XMLHttpRequest();
+                request.open('GET', './PSFree.manifest?check=' + Date.now(), true);
+                request.onreadystatechange = function () {
+                    if (request.readyState !== 4 || request.status !== 200) return;
+                    var match = request.responseText.match(/^# revision:\s*([^\s]+)$/m);
+                    if (!match) return;
+
+                    var currentRevision = match[1];
+                    var installedRevision = localStorage.getItem('psDealsCacheRevision');
+                    if (!installedRevision) {
+                        localStorage.setItem('psDealsCacheRevision', currentRevision);
+                    } else if (installedRevision !== currentRevision) {
+                        window.location.replace('./cache.html');
+                    }
+                };
+                request.send(null);
+            } catch (error) {
+                // Offline mode: the active application cache remains usable.
+            }
+        })();
     </script>
 </head>
 

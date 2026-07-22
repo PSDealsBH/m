@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" manifest="PSFree.manifest">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>PS_DEALS_BH - Offline Cache</title>
+    <style>
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            background: #03101f;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .cache-card {
+            width: 82%;
+            max-width: 620px;
+            padding: 34px;
+            border: 1px solid #238ee0;
+            border-radius: 18px;
+            background: #08182b;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h1 { margin: 0 0 24px; font-size: 30px; }
+        #cache-message { min-height: 28px; color: #a9d9ff; font-size: 18px; }
+        .progress-track {
+            height: 18px;
+            margin-top: 20px;
+            overflow: hidden;
+            border: 1px solid #2f5f88;
+            border-radius: 9px;
+            background: #020912;
+        }
+        #cache-progress {
+            width: 0;
+            height: 100%;
+            background: #168cec;
+        }
+        #cache-details {
+            min-height: 18px;
+            margin-top: 14px;
+            color: #ff9d9d;
+            font-size: 13px;
+            direction: ltr;
+            word-break: break-all;
+        }
+        #continue-link {
+            display: none;
+            margin-top: 18px;
+            color: #8fcbff;
+        }
+    </style>
+    <script>
+        var cacheFinished = false;
+        var pendingMessage = 'Preparing offline cache...';
+        var pendingPercent = 0;
+
+        function cacheStatusName(status) {
+            var names = ['UNCACHED', 'IDLE', 'CHECKING', 'DOWNLOADING', 'UPDATEREADY', 'OBSOLETE'];
+            return names[status] || String(status);
+        }
+
+        function renderCacheState() {
+            var message = document.getElementById('cache-message');
+            var progress = document.getElementById('cache-progress');
+            if (message) message.textContent = pendingMessage;
+            if (progress) progress.style.width = pendingPercent + '%';
+        }
+
+        function readManifestRevision(callback) {
+            try {
+                var request = new XMLHttpRequest();
+                request.open('GET', './PSFree.manifest?revision=' + Date.now(), true);
+                request.onreadystatechange = function () {
+                    if (request.readyState !== 4) return;
+                    var revision = '';
+                    if (request.status === 200) {
+                        var match = request.responseText.match(/^# revision:\s*([^\s]+)$/m);
+                        if (match) revision = match[1];
+                    }
+                    callback(revision);
+                };
+                request.onerror = function () { callback(''); };
+                request.send(null);
+            } catch (error) {
+                callback('');
+            }
+        }
+
+        function finishCacheInstall(isUpdate) {
+            if (cacheFinished) return;
+            cacheFinished = true;
+
+            if (isUpdate && window.applicationCache.swapCache) {
+                try { window.applicationCache.swapCache(); } catch (error) { }
+            }
+
+            pendingPercent = 100;
+            pendingMessage = 'Cache installed successfully.';
+            renderCacheState();
+
+            readManifestRevision(function (revision) {
+                localStorage.setItem('psDealsCacheInstalled', 'true');
+                if (revision) localStorage.setItem('psDealsCacheRevision', revision);
+                setTimeout(function () {
+                    window.location.replace('./index.html');
+                }, 1000);
+            });
+        }
+
+        function cacheProgress(event) {
+            var percent = event.total ? Math.round((event.loaded / event.total) * 100) : 0;
+            if (percent > 100) percent = 100;
+            pendingPercent = percent;
+            pendingMessage = 'Installing Cache: ' + percent + '%';
+            renderCacheState();
+        }
+
+        function cacheError(event) {
+            var status = cacheStatusName(window.applicationCache.status);
+            var reason = event && event.reason ? event.reason : 'Unknown reason';
+            var url = event && event.url ? event.url : 'Unavailable URL';
+            pendingMessage = 'Cache installation failed. Status: ' + status;
+            renderCacheState();
+
+            var details = document.getElementById('cache-details');
+            var continueLink = document.getElementById('continue-link');
+            if (details) details.textContent = 'Reason: ' + reason + ' | URL: ' + url;
+            if (continueLink) continueLink.style.display = 'inline-block';
+        }
+
+        if (window.applicationCache) {
+            window.applicationCache.addEventListener('progress', cacheProgress, false);
+            window.applicationCache.oncached = function () { finishCacheInstall(false); };
+            window.applicationCache.onupdateready = function () { finishCacheInstall(true); };
+            window.applicationCache.onerror = cacheError;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            renderCacheState();
+            if (!window.applicationCache) {
+                pendingMessage = 'Application Cache is not supported in this browser.';
+                renderCacheState();
+                document.getElementById('continue-link').style.display = 'inline-block';
+            }
+        }, false);
+    </script>
+</head>
+<body>
+    <main class="cache-card">
+        <h1>PS_DEALS_BH</h1>
+        <div id="cache-message">Preparing offline cache...</div>
+        <div class="progress-track"><div id="cache-progress"></div></div>
+        <div id="cache-details"></div>
+        <a id="continue-link" href="./index.html">Continue to PS_DEALS_BH</a>
+    </main>
+</body>
+</html>
